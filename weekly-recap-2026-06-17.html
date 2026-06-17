@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Recap — Mine Ops Sim — 17 June 2026</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --border: #2a2e3e;
+    --accent-1: #3b82f6;
+    --accent-2: #10b981;
+    --accent-3: #f59e0b;
+    --accent-4: #8b5cf6;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --tag-bg: #1e2235;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    padding: 40px 24px 80px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+  }
+  header .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  header .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .bucket {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .bucket-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 24px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .bucket-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .b1 .bucket-num { background: rgba(59,130,246,0.2); color: var(--accent-1); }
+  .b2 .bucket-num { background: rgba(16,185,129,0.2); color: var(--accent-2); }
+  .b3 .bucket-num { background: rgba(245,158,11,0.2); color: var(--accent-3); }
+  .b4 .bucket-num { background: rgba(139,92,246,0.2); color: var(--accent-4); }
+  .bucket-header h2 {
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .bucket-header .tag {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+  }
+  .tag-stable { background: rgba(16,185,129,0.15); color: var(--accent-2); border: 1px solid rgba(16,185,129,0.3); }
+  .tag-active { background: rgba(59,130,246,0.15); color: var(--accent-1); border: 1px solid rgba(59,130,246,0.3); }
+  .tag-shifting { background: rgba(245,158,11,0.15); color: var(--accent-3); border: 1px solid rgba(245,158,11,0.3); }
+  .tag-inflight { background: rgba(139,92,246,0.15); color: var(--accent-4); border: 1px solid rgba(139,92,246,0.3); }
+  .bucket-body {
+    padding: 24px 24px 28px;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+  .b1 .card h3 { color: var(--accent-1); }
+  .b2 .card h3 { color: var(--accent-2); }
+  .b3 .card h3 { color: var(--accent-3); }
+  .b4 .card h3 { color: var(--accent-4); }
+  .card p { color: var(--muted); font-size: 14px; }
+  .card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .card ul li {
+    font-size: 14px;
+    color: var(--muted);
+    padding: 3px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .card ul li::before {
+    content: "·";
+    position: absolute;
+    left: 4px;
+    color: var(--border);
+    font-size: 18px;
+    line-height: 1.3;
+  }
+  .card ul li strong { color: var(--text); font-weight: 500; }
+  .status-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .status-chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-green { background: var(--accent-2); }
+  .dot-blue  { background: var(--accent-1); }
+  .dot-amber { background: var(--accent-3); }
+  .dot-grey  { background: #475569; }
+  .progress-block {
+    margin-bottom: 18px;
+  }
+  .progress-block .prog-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .progress-block .prog-label span { color: var(--muted); }
+  .progress-block .prog-label strong { color: var(--text); }
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+  }
+  .fill-green { background: var(--accent-2); }
+  .fill-blue  { background: var(--accent-1); }
+  .fill-amber { background: var(--accent-3); }
+  .fill-grey  { background: #475569; }
+  .progress-note { font-size: 12px; color: var(--muted); }
+  .prose {
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.75;
+  }
+  .prose p { margin-bottom: 12px; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose strong { color: var(--text); font-weight: 500; }
+  .timeline {
+    border-left: 2px solid var(--border);
+    margin-left: 4px;
+    padding-left: 20px;
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 18px;
+  }
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -26px;
+    top: 7px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg);
+  }
+  .timeline-item.done::before { background: var(--accent-2); border-color: var(--accent-2); }
+  .timeline-item.active::before { background: var(--accent-1); border-color: var(--accent-1); }
+  .timeline-item.next::before { background: var(--tag-bg); border-color: var(--accent-3); }
+  .timeline-item .ti-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .timeline-item.done .ti-label { color: var(--muted); }
+  .timeline-item .ti-desc {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+  }
+  .inline-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+  .it-green { background: rgba(16,185,129,0.15); color: var(--accent-2); }
+  .it-blue  { background: rgba(59,130,246,0.15); color: var(--accent-1); }
+  .it-amber { background: rgba(245,158,11,0.15); color: var(--accent-3); }
+  .it-grey  { background: rgba(71,85,105,0.3);   color: #94a3b8; }
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: #475569;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="label">Mine Ops Sim · Weekly Recap</div>
+  <h1>Week of 17 June 2026</h1>
+  <div class="subtitle">Four buckets: Simulation · Agent · Background · Management</div>
+</header>
+
+<!-- ─────────────────────────────────────────── BUCKET 1 ─── -->
+<div class="bucket b1">
+  <div class="bucket-header">
+    <div class="bucket-num">1</div>
+    <h2>Simulation</h2>
+    <span class="tag tag-stable">Stable</span>
+  </div>
+  <div class="bucket-body">
+
+    <div class="two-col">
+      <div class="card">
+        <h3>Open Pit — V1</h3>
+        <ul>
+          <li><strong>Status:</strong> V1 running and stable. No code changes this week.</li>
+          <li><strong>Fleet:</strong> configurable truck fleet, two shovels, one crusher, waste dump. Fleet/time usage/maintenance model complete.</li>
+          <li><strong>Human OS:</strong> 4-crew 7×7 roster, supervisor per shift, day/night productivity factors, Wednesday changeover turbulence.</li>
+          <li><strong>V1 output:</strong> truck_cycles, shift_operational_summary, production_by_shift, fleet_time_usage_by_class, hourly_cycle_summary, equipment_events, maintenance_schedule, alerts, plan_vs_actual.</li>
+          <li><strong>Open gap:</strong> EHS/safety event stream — not yet scoped for any version. Shared schema with UG needed before either simulator implements it.</li>
+          <li><strong>Next version (V2):</strong> geology block model, material reconciliation — spec not yet written.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Underground — V1</h3>
+        <ul>
+          <li><strong>Status:</strong> V1 complete, ME-accepted. Three material fixes landed this week.</li>
+          <li><strong>Geometry locked:</strong> 6.5 m × 5.5 m × 4 m advance × 0.85 blast efficiency × 2.8 t/m³ = <strong>340 t per blast</strong> (room and pillar).</li>
+          <li><strong>Fleet:</strong> 6 LHDs, 2 per heading. Single LHD cannot clear 340 t + drill + GS within shift; double-LHD required for all rooms to produce every shift.</li>
+          <li><strong>Hoist:</strong> 150 t/h rated. OEE = 0.90 × 0.85 × 0.90 ≈ 0.70 → 1,050 t effective capacity vs 1,020 t peak. Hoist is never the constraint.</li>
+          <li><strong>Plan:</strong> 1,020 t/shift (3 × 340 t) = physical ceiling. Mean adherence 60–75%; hard-to-hit is the game mechanic.</li>
+          <li><strong>This week:</strong> ore_pass_inventory_tonnes_at_shift_end, services_extension_due_next_muckout, lost_shaft cap, bimodal fix (room stagger), 15 contract tests all passing.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="status-row">
+      <div class="status-chip"><div class="dot dot-green"></div>OP V1 — running</div>
+      <div class="status-chip"><div class="dot dot-green"></div>UG V1 — running</div>
+      <div class="status-chip"><div class="dot dot-grey"></div>OP V2 — spec not written</div>
+      <div class="status-chip"><div class="dot dot-grey"></div>UG V2 — spec not written</div>
+      <div class="status-chip"><div class="dot dot-amber"></div>EHS layer — gap, unscoped</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── BUCKET 2 ─── -->
+<div class="bucket b2">
+  <div class="bucket-header">
+    <div class="bucket-num">2</div>
+    <h2>Agent</h2>
+    <span class="tag tag-active">Spec ~80% · OP Build ~35%</span>
+  </div>
+  <div class="bucket-body">
+
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Three agents are the end-state consumer of the minemgr pipeline. The spec work done this week covers the majority of what each agent requires. Two distinct dimensions are tracked: <strong>spec coverage</strong> (requirements defined) and <strong>build progress</strong> (code working). Build progress is split: <strong>OP has a working foundation</strong> (~1,270 lines: ingest, validation, management tables, facts, 515-line reports module) that proves the pipeline pattern but needs refactoring into the new adapter architecture. <strong>UG needs full new adapter code</strong> — the existing codebase is OP-only — but the spec is complete and the OP implementation demonstrates the approach works.</p>
+    </div>
+
+    <!-- ShiftIQ -->
+    <div class="progress-block">
+      <div class="prog-label"><strong>ShiftIQ <span class="inline-tag it-blue">AI-1 / AI-2</span></strong><span>Spec ~80% · OP build ~35% · UG build ~5%</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">Spec coverage</div>
+          <div class="progress-bar"><div class="progress-fill fill-blue" style="width:80%"></div></div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">OP build</div>
+          <div class="progress-bar"><div class="progress-fill fill-blue" style="width:35%"></div></div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">UG build</div>
+          <div class="progress-bar"><div class="progress-fill fill-grey" style="width:5%"></div></div>
+        </div>
+      </div>
+      <div class="progress-note">Grounded shift performance scoring — produces shift summary, variance attribution, confidence-labelled driver explanation. OP: facts.py and management_tables.py exist, OP-only. UG: spec done; adapter and UG-specific fact rules not yet coded.</div>
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <h3>ShiftIQ — what minemgr already specifies</h3>
+      <ul>
+        <li><strong>fact-model.md</strong> — full observed-fact rule catalogue (PROD-*, FLEET-*, DELAY-*, GRADE-*, 14 UG-specific UG-* rules) with thresholds, severity, and fact text templates.</li>
+        <li><strong>fact-model.md</strong> — inferred_causes table schema: confidence labels, evidence_summary, source lineage. Recommendation candidates: action_type, owner, evidence.</li>
+        <li><strong>fact-model.md</strong> — UG plan adherence calculation (CALC-UG-PLAN-ADH): uses tonnes_hoisted, not tonnes_to_ore_pass. Hoist utilisation (CALC-UG-HOIST-UTIL): 150 t/h × hours × 0.70 OEE.</li>
+        <li><strong>report-specs.md</strong> — variance bridge report spec: planned → actual bridge with UG-specific loss categories (blast re-entry, ventilation, shaft access, hoist constraint).</li>
+        <li><strong>architecture.md</strong> — AI layer reads facts and management tables only; never raw simulator output. Every fact cites a calculation_rule_id.</li>
+        <li><strong>Missing:</strong> implementation of Phase 1–5 pipeline; AI layer code (Phase 6).</li>
+      </ul>
+    </div>
+
+    <!-- Review Agent -->
+    <div class="progress-block">
+      <div class="prog-label"><strong>Review Agent <span class="inline-tag it-green">AI-2 / AI-3</span></strong><span>Spec ~75% · OP build ~20% · UG build ~5%</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">Spec coverage</div>
+          <div class="progress-bar"><div class="progress-fill fill-green" style="width:75%"></div></div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">OP build</div>
+          <div class="progress-bar"><div class="progress-fill fill-green" style="width:20%"></div></div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">UG build</div>
+          <div class="progress-bar"><div class="progress-fill fill-grey" style="width:5%"></div></div>
+        </div>
+      </div>
+      <div class="progress-note">Post-shift AI review — inferred cause explanations with evidence, recommendation candidates with action_type and owner. OP: facts.py has observed fact generation; inferred_causes and recommendation_candidates not yet coded for either source. AI prompt layer not started.</div>
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <h3>Review Agent — what minemgr already specifies</h3>
+      <ul>
+        <li><strong>fact-model.md</strong> — full inferred_causes and recommendation_candidates schemas, including confidence (low/medium/high), evidence_summary, source_tables, source_row_references.</li>
+        <li><strong>system-boundaries.md</strong> — interpretation rule: observed facts and inferred causes must be stored and presented separately; AI must not assert root-cause certainty when only correlation is visible.</li>
+        <li><strong>ai-layer-roadmap.md</strong> — AI-2 phase: inputs (observed facts, inferred causes, variance bridge), outputs (driver explanation, confidence labels, evidence bullets). AI-3: recommendation candidates with framing as candidates, not commands.</div>
+        <li><strong>backlog.md</strong> — Epic 7 (fact model) and Epic 8 (AI layer) fully specified with acceptance criteria: facts cite rule IDs; AI can be disabled without breaking reports; no fact without traceable source_row_reference.</li>
+        <li><strong>report-specs.md</strong> — Report 4 (variance bridge) and Report 5 (UG operational report) include "inferred causes, if enabled" sections with confidence and evidence.</li>
+        <li><strong>Missing:</strong> deterministic rule patterns for inferred_causes.csv not yet written as code; AI Phase 2/3 prompt engineering not yet designed.</li>
+      </ul>
+    </div>
+
+    <!-- Handover Agent -->
+    <div class="progress-block">
+      <div class="prog-label"><strong>Handover Agent <span class="inline-tag it-amber">Epic 6 / AI-1</span></strong><span>Spec ~85% · OP build ~40% · UG build ~5%</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">Spec coverage</div>
+          <div class="progress-bar"><div class="progress-fill fill-amber" style="width:85%"></div></div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">OP build</div>
+          <div class="progress-bar"><div class="progress-fill fill-amber" style="width:40%"></div></div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">UG build</div>
+          <div class="progress-bar"><div class="progress-fill fill-grey" style="width:5%"></div></div>
+        </div>
+      </div>
+      <div class="progress-note">Supervisor handover assistant — self-contained tabbed HTML, UG room readiness dashboard, hoist card, ore pass carry-over, services extension warnings. OP: reports.py (515 lines) produces Markdown shift and daily reports; HTML tabs not yet built. UG: spec complete, adapter and UG-specific report sections need full implementation.</div>
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <h3>Handover Agent — what minemgr already specifies</h3>
+      <ul>
+        <li><strong>report-specs.md</strong> — full HTML tab structure: Handover / My Last Shift / My Crew / Targets / Trends / Evidence. Design rules: chart cards over tables, neutral dark cards, no large tables in supervisor view, forecast risk labels separate from measured facts.</li>
+        <li><strong>report-specs.md — Report 5 (UG operational report):</strong> per-room readiness states (AVAILABLE, BLAST_REENTRY_WAIT, GS_REQUIRED, SERVICES_EXT_DUE, VENTILATION_HOLD, MUCKING_COMPLETE), hoist throughput card, ore pass inventory at shift end, services extension flags for next shift, LHD utilisation by unit.</li>
+        <li><strong>adapters.md + input-contracts.md</strong> — room_status.csv and hoist_cycles.csv contracts fully defined: all columns the Handover view needs (readiness_state, planned_tonnes_remaining, services_extension_due_next_muckout, tonnes_hoisted, hoist_downtime_minutes) are specified.</li>
+        <li><strong>backlog.md — Epic 6:</strong> acceptance criteria: HTML opens without server; default tab Handover; UG Handover includes room readiness table and hoist card; availability watch does not invent signals.</li>
+        <li><strong>common-model.md</strong> — sidecar fields for UG fully specified: all handover data (blast re-entry, shaft access, ore pass inventory, room readiness records) flows through the UG sidecar to the Handover agent.</li>
+        <li><strong>Missing:</strong> HTML template/generation code; implementation of Epic 3–4 management tables that feed the Handover view.</li>
+      </ul>
+    </div>
+
+    <hr class="divider">
+
+    <div class="card">
+      <h3>Pipeline — build status</h3>
+      <div class="timeline">
+        <div class="timeline-item done">
+          <div class="ti-label">Phase 0 — Architecture &amp; Specification</div>
+          <div class="ti-desc">Done. 11 minemgr documents written/rewritten this week covering every layer the three agents depend on.</div>
+        </div>
+        <div class="timeline-item next">
+          <div class="ti-label">Phase 1 — Adapters &amp; Common Model Scaffold</div>
+          <div class="ti-desc">CommonModel type, AdapterContract protocol, run.py source detection, OP and UG adapters, fixture packages, adapter tests.</div>
+        </div>
+        <div class="timeline-item next">
+          <div class="ti-label">Phase 2 — Management Tables</div>
+          <div class="ti-desc">Common: shift_summary, fleet_time_usage, alert_summary, variance_bridge. UG-specific: ug_room_summary, ug_hoist_summary, ug_ore_pass_summary. → feeds Handover Agent.</div>
+        </div>
+        <div class="timeline-item next">
+          <div class="ti-label">Phase 3–4 — Static Reports &amp; HTML</div>
+          <div class="ti-desc">shift_report.md, ug_operational_report.md, supervisor handover HTML. → Handover Agent usable at Phase 4.</div>
+        </div>
+        <div class="timeline-item next">
+          <div class="ti-label">Phase 5 — Facts</div>
+          <div class="ti-desc">observed_facts.csv (all rule catalogues), inferred_causes.csv, recommendation_candidates.csv. → ShiftIQ and Review Agent usable at Phase 5 (deterministic only).</div>
+        </div>
+        <div class="timeline-item next">
+          <div class="ti-label">Phase 6 — AI Layer</div>
+          <div class="ti-desc">AI narrative for all three agents. ShiftIQ summaries, Review agent explanations, Handover agent narrative. AI reads facts only.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── BUCKET 3 ─── -->
+<div class="bucket b3">
+  <div class="bucket-header">
+    <div class="bucket-num">3</div>
+    <h2>Background</h2>
+    <span class="tag tag-shifting">Scope Reframe Complete</span>
+  </div>
+  <div class="bucket-body">
+
+    <div class="prose">
+      <p><strong>Where it started:</strong> The project began as an OpenPit simulator with a companion reporting script. The reporting layer was tightly coupled to OP output schemas — it read truck_cycles directly, referenced shovel_id and crusher_feed by name, and had no concept of a second mine type.</p>
+
+      <p><strong>What changed first:</strong> The underground simulator (room and pillar, LHDs, hoist, ore pass) was built alongside OP as an independent parallel system. The question of whether minemgr should serve both surfaced the real problem: two simulators would mean two separate reporting codebases with duplicated analysis logic — or one codebase that branches constantly on source type.</p>
+
+      <p><strong>The key reframe:</strong> The simulators can be replaced by real operational data. A mine running Modular Mining or Jigsaw exports the same structural data — equipment events, shift summaries, production tables — that the simulators produce synthetically. <strong>minemgr is not a simulator companion. It is an operational analysis platform.</strong> The data source (OP sim, UG sim, or real mine) is an implementation detail belonging to an adapter.</p>
+
+      <p><strong>Architectural consequence:</strong> Adapter/analysis boundary. Adapters translate source-specific schemas (truck_id, shovel_id, crusher_feed) into a source-agnostic common model (equipment_id, origin_id, destination_id). All analysis, reporting, and AI logic operates on the common model. Adding a new data source — a real mine, a different simulator, a manual log import — requires writing one new adapter. No analysis, report, or AI module changes.</p>
+
+      <p><strong>What this means for the product:</strong> The analysis IP — variance attribution, plan adherence calculation, hoist OEE analysis, room readiness scoring — is reusable across any compatible data source. The agents (ShiftIQ, Review, Handover) will work against real mine data when real adapters are written, without any changes to the AI layer. The simulator is the development environment; the real mine is the deployment target.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── BUCKET 4 ─── -->
+<div class="bucket b4">
+  <div class="bucket-header">
+    <div class="bucket-num">4</div>
+    <h2>Management</h2>
+    <span class="tag tag-inflight">In Flight</span>
+  </div>
+  <div class="bucket-body">
+
+    <div class="two-col">
+      <div class="card">
+        <h3>Sprint Structure</h3>
+        <ul>
+          <li><strong>V0</strong> — toy model: runnable scaffold, basic contracts, smoke test passing. Done for both OP and UG.</li>
+          <li><strong>V1</strong> — credible operations: fleet realism, time usage hierarchy, human OS (4-crew roster, supervisor, day/night), delay taxonomy, maintenance model. Done for both OP and UG.</li>
+          <li><strong>V2+</strong> — geology reconciliation, plan adherence control, bottleneck modelling. Specs not yet written for either simulator.</li>
+          <li><strong>minemgr</strong> — separate sprint track: Phase 0 (spec) complete. Phase 1 (adapters) is next. Phases 2–6 follow sequentially.</li>
+          <li><strong>Review gate:</strong> ME / SE / PM panel reviews specs before a coding agent starts. UG had two panel rounds. minemgr specs queued for panel review now.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Repo &amp; Branches</h3>
+        <ul>
+          <li><strong>Monorepo root:</strong> mine-ops-sim/. All git operations from root.</li>
+          <li><strong>Current branches:</strong> main, uground/v1-sprint.</li>
+          <li><strong>Naming convention:</strong> &lt;subproject&gt;/&lt;feature&gt; — e.g. minemgr/adapter-arch, uground/v2-geology.</li>
+          <li><strong>Branch discipline:</strong> identified gap this session — two spec commits landed directly on main without a branch. Corrected; hard rule locked in memory.</li>
+          <li><strong>Active branch needed:</strong> minemgr/v0-adapters for Phase 1 implementation work.</li>
+          <li><strong>Subproject isolation:</strong> OP and UG never import from each other. minemgr consumes output packages only — never simulator internals.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:0;">
+      <h3>Public Progress Area</h3>
+      <p style="font-size:14px; color: var(--muted); margin-bottom: 12px;">
+        A <code>public/</code> directory was scaffolded this week at the repo root for GitHub Pages output. The intent is to publish intermediate products — spec summaries, sample shift reports, dashboard previews — to a publicly accessible URL so clients and reviewers can inspect progress without needing repository access.
+      </p>
+      <ul>
+        <li><strong>Purpose:</strong> client visibility and iterative review of intermediate deliverables without repo credentials.</li>
+        <li><strong>Content candidates:</strong> weekly recaps (like this one), sample minemgr shift reports from simulator runs, agent output previews, spec change summaries.</li>
+        <li><strong>Not published:</strong> raw simulator internals, proprietary config parameters, or anything requiring site confidentiality.</li>
+        <li><strong>Next step:</strong> confirm GitHub Pages branch/root config and publish this recap as the first entry.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  Mine Ops Sim · Weekly recap generated 17 June 2026 · mine-ops-sim monorepo
+</footer>
+
+</body>
+</html>
