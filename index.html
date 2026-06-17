@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mining Engine — Project Updates</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --border: #2a2e3e;
+    --accent-1: #3b82f6;
+    --accent-2: #10b981;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; padding: 2rem; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+  h1 { font-size: 1.6rem; color: var(--accent-1); }
+  p.sub { color: var(--muted); margin-top: 0.4rem; font-size: 0.9rem; }
+  h2 { font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+  ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  li a {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.9rem 1.2rem;
+    text-decoration: none; color: var(--text);
+    transition: border-color 0.15s;
+  }
+  li a:hover { border-color: var(--accent-1); }
+  .label { font-size: 0.95rem; }
+  .date { font-size: 0.8rem; color: var(--muted); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-2); flex-shrink: 0; margin-right: 0.8rem; }
+  .row { display: flex; align-items: center; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Mining Engine — Project Updates</h1>
+  <p class="sub">Non-proprietary updates and progress reports</p>
+</header>
+<h2>Weekly Recaps</h2>
+<ul>
+  <li>
+    <a href="weekly-recap-2026-06-17.html">
+      <div class="row"><div class="dot"></div><span class="label">Weekly Recap — 17 June 2026</span></div>
+      <span class="date">2026-06-17</span>
+    </a>
+  </li>
+</ul>
+</body>
+</html>
